@@ -1,7 +1,7 @@
 #!/bin/bash
 
-component = $1
-environment = $2
+component=$1
+environment=$2
 dnf install ansible -y
 cd /home/ec2-user
 git clone https://github.com/sureshdevaiops/roboshop-ansible-v3.git
