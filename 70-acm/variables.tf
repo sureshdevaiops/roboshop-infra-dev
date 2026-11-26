@@ -1,20 +1,20 @@
 variable "project" {
-    default = "roboshop"
+  default = "roboshop"
 }
 
 variable "environment" {
-    default = "dev"
+  default = "dev"
 }
 
 variable "zone_id" {
-    default = "XXXXXXXXXXXXX"
+  default = "XXXXXXXXXXXXX"
 }
 
 variable "domain_name" {
-    default = "ksrdaws92s.store"
+  default = "ksrdaws92s.store"
 }
 
 variable "app_version" {
-    default = "v4"
+  default = "v4"
 }
 

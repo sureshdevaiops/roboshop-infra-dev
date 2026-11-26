@@ -1,9 +1,9 @@
 resource "aws_instance" "mongodb" {
-  ami           = local.ami_id
-  instance_type = "t3.micro"
-  subnet_id     = local.database_subnet_id
+  ami                    = local.ami_id
+  instance_type          = "t3.micro"
+  subnet_id              = local.database_subnet_id
   vpc_security_group_ids = [local.mongodb_sg_id]
-  tags = local.common_tags
+  tags                   = local.common_tags
 }
 
 resource "terraform_data" "bootstrap" {
@@ -12,10 +12,10 @@ resource "terraform_data" "bootstrap" {
   ]
 
   connection {
-    type        = "ssh"
-    user        = "ec2-user"
+    type     = "ssh"
+    user     = "ec2-user"
     password = "DevOps321"
-    host        = aws_instance.mongodb.private_ip
+    host     = aws_instance.mongodb.private_ip
   }
 
   provisioner "file" {
@@ -32,9 +32,9 @@ resource "terraform_data" "bootstrap" {
 }
 
 resource "aws_instance" "redis" {
-  ami           = local.ami_id
-  instance_type = "t3.micro"
-  subnet_id     = local.database_subnet_id
+  ami                    = local.ami_id
+  instance_type          = "t3.micro"
+  subnet_id              = local.database_subnet_id
   vpc_security_group_ids = [local.redis_sg_id]
   tags = merge(
     local.common_tags,
@@ -50,10 +50,10 @@ resource "terraform_data" "redis" {
   ]
 
   connection {
-    type        = "ssh"
-    user        = "ec2-user"
+    type     = "ssh"
+    user     = "ec2-user"
     password = "DevOps321"
-    host        = aws_instance.redis.private_ip
+    host     = aws_instance.redis.private_ip
   }
 
   provisioner "file" {
@@ -70,11 +70,11 @@ resource "terraform_data" "redis" {
 }
 
 resource "aws_instance" "mysql" {
-  ami           = local.ami_id
-  instance_type = "t3.micro"
-  subnet_id     = local.database_subnet_id
+  ami                    = local.ami_id
+  instance_type          = "t3.micro"
+  subnet_id              = local.database_subnet_id
   vpc_security_group_ids = [local.mysql_sg_id]
-  iam_instance_profile = aws_iam_instance_profile.mysql.name
+  iam_instance_profile   = aws_iam_instance_profile.mysql.name
   tags = merge(
     local.common_tags,
     {
@@ -89,10 +89,10 @@ resource "terraform_data" "mysql" {
   ]
 
   connection {
-    type        = "ssh"
-    user        = "ec2-user"
+    type     = "ssh"
+    user     = "ec2-user"
     password = "DevOps321"
-    host        = aws_instance.mysql.private_ip
+    host     = aws_instance.mysql.private_ip
   }
 
   provisioner "file" {
@@ -110,11 +110,11 @@ resource "terraform_data" "mysql" {
 
 
 resource "aws_instance" "rabbitmq" {
-  ami           = local.ami_id
-  instance_type = "t3.micro"
-  subnet_id     = local.database_subnet_id
+  ami                    = local.ami_id
+  instance_type          = "t3.micro"
+  subnet_id              = local.database_subnet_id
   vpc_security_group_ids = [local.rabbitmq_sg_id]
-  iam_instance_profile = aws_iam_instance_profile.rabbitmq.name
+  iam_instance_profile   = aws_iam_instance_profile.rabbitmq.name
   tags = merge(
     local.common_tags,
     {
@@ -129,10 +129,10 @@ resource "terraform_data" "rabbitmq" {
   ]
 
   connection {
-    type        = "ssh"
-    user        = "ec2-user"
+    type     = "ssh"
+    user     = "ec2-user"
     password = "DevOps321"
-    host        = aws_instance.rabbitmq.private_ip
+    host     = aws_instance.rabbitmq.private_ip
   }
 
   provisioner "file" {

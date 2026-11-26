@@ -1,5 +1,5 @@
 resource "aws_iam_role" "mysql" {
-  name =  "${var.project}-${var.environment}-mysql" # this is iam role
+  name = "${var.project}-${var.environment}-mysql" # this is iam role
 
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.
@@ -20,7 +20,7 @@ resource "aws_iam_role" "mysql" {
   tags = merge(
     local.common_tags,
     {
-        Name = "${var.project}-${var.environment}-mysql"
+      Name = "${var.project}-${var.environment}-mysql"
 
     }
   )
@@ -33,23 +33,23 @@ resource "aws_iam_policy" "mysql" {
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.
   policy = templatefile("${path.module}/mysql-policy.json.tftpl", {
-    account_id    = local.account_id
-    project = var.project
+    account_id  = local.account_id
+    project     = var.project
     environment = var.environment
   })
 
-   tags = merge(
+  tags = merge(
     local.common_tags,
     {
-        Name = "${var.project}-${var.environment}-mysql"
+      Name = "${var.project}-${var.environment}-mysql"
 
     }
   )
 
 }
 
-resource  "aws_iam_role_policy_attachment" "mysql"{
-  role = aws_iam_role.mysql.name
+resource "aws_iam_role_policy_attachment" "mysql" {
+  role       = aws_iam_role.mysql.name
   policy_arn = aws_iam_policy.mysql.arn
 }
 
@@ -60,7 +60,7 @@ resource "aws_iam_instance_profile" "mysql" {
 
 
 resource "aws_iam_role" "rabbitmq" {
-  name =  "${var.project}-${var.environment}-rabbitmq" # this is iam role
+  name = "${var.project}-${var.environment}-rabbitmq" # this is iam role
 
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.
@@ -81,7 +81,7 @@ resource "aws_iam_role" "rabbitmq" {
   tags = merge(
     local.common_tags,
     {
-        Name = "${var.project}-${var.environment}-rabbitmq"
+      Name = "${var.project}-${var.environment}-rabbitmq"
 
     }
   )
@@ -94,26 +94,26 @@ resource "aws_iam_policy" "rabbitmq" {
   # Terraform's "jsonencode" function converts a
   # Terraform expression result to valid JSON syntax.
   policy = templatefile("${path.module}/rabbitmq-policy.json.tftpl", {
-    account_id    = local.account_id
-    project = var.project
+    account_id  = local.account_id
+    project     = var.project
     environment = var.environment
   })
 
-   tags = merge(
+  tags = merge(
     local.common_tags,
     {
-        Name = "${var.project}-${var.environment}-rabbitmq"
+      Name = "${var.project}-${var.environment}-rabbitmq"
 
     }
   )
 
 }
 
-resource  "aws_iam_role_policy_attachment" "rabbitmq"{
-  role = aws_iam_role.rabbitmq.name
+resource "aws_iam_role_policy_attachment" "rabbitmq" {
+  role       = aws_iam_role.rabbitmq.name
   policy_arn = aws_iam_policy.rabbitmq.arn
 }
-  
+
 resource "aws_iam_instance_profile" "rabbitmq" {
   name = "${var.project}-${var.environment}-rabbitmq"
   role = aws_iam_role.rabbitmq.name

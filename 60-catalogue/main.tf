@@ -1,12 +1,12 @@
 resource "aws_instance" "catalogue" {
-  ami           = local.ami_id
-  instance_type = "t3.micro"
-  subnet_id     = local.private_subnet_id
+  ami                    = local.ami_id
+  instance_type          = "t3.micro"
+  subnet_id              = local.private_subnet_id
   vpc_security_group_ids = [local.catalogue_sg_id]
   tags = merge(
     local.common_tags,
     {
-        Name = "${local.common_name}-catalogue"
+      Name = "${local.common_name}-catalogue"
     }
   )
 }
@@ -17,10 +17,10 @@ resource "terraform_data" "bootstrap" {
   ]
 
   connection {
-    type        = "ssh"
-    user        = "ec2-user"
+    type     = "ssh"
+    user     = "ec2-user"
     password = "DevOps321"
-    host        = aws_instance.catalogue.private_ip
+    host     = aws_instance.catalogue.private_ip
   }
 
   provisioner "file" {
@@ -39,7 +39,7 @@ resource "terraform_data" "bootstrap" {
 resource "aws_ec2_instance_state" "catalogue" {
   instance_id = aws_instance.catalogue.id
   state       = "stopped"
-  depends_on = [terraform_data.bootstrap]
+  depends_on  = [terraform_data.bootstrap]
 }
 
 resource "aws_ami_from_instance" "catalogue" {
@@ -50,7 +50,7 @@ resource "aws_ami_from_instance" "catalogue" {
   tags = merge(
     local.common_tags,
     {
-        Name = "${local.common_name}-catalogue-${var.app_version}-${aws_instance.catalogue.id}"
+      Name = "${local.common_name}-catalogue-${var.app_version}-${aws_instance.catalogue.id}"
     }
   )
 }
@@ -58,20 +58,20 @@ resource "aws_ami_from_instance" "catalogue" {
 resource "aws_launch_template" "catalogue" {
   name = "${local.common_name}-catalogue"
 
-  image_id = aws_ami_from_instance.catalogue.id
+  image_id                             = aws_ami_from_instance.catalogue.id
   instance_initiated_shutdown_behavior = "terminate"
 
-  instance_type = "t3.micro"
+  instance_type          = "t3.micro"
   vpc_security_group_ids = [local.catalogue_sg_id]
   update_default_version = true
   tag_specifications {
     resource_type = "instance"
 
     tags = merge(
-        local.common_tags,
-        {
-            Name = "${local.common_name}-catalogue"
-        }
+      local.common_tags,
+      {
+        Name = "${local.common_name}-catalogue"
+      }
     )
   }
 
@@ -79,30 +79,30 @@ resource "aws_launch_template" "catalogue" {
     resource_type = "volume"
 
     tags = merge(
-        local.common_tags,
-        {
-            Name = "${local.common_name}-catalogue"
-        }
+      local.common_tags,
+      {
+        Name = "${local.common_name}-catalogue"
+      }
     )
   }
 }
 
 resource "aws_lb_target_group" "catalogue" {
-  name     = "${local.common_name}-catalogue"
-  port     = 8080
-  protocol = "HTTP"
-  vpc_id   = local.vpc_id
+  name                 = "${local.common_name}-catalogue"
+  port                 = 8080
+  protocol             = "HTTP"
+  vpc_id               = local.vpc_id
   deregistration_delay = 10
 
   health_check {
-    healthy_threshold = 2
+    healthy_threshold   = 2
     unhealthy_threshold = 2
-    interval = 10
-    matcher = "200-299"
-    path = "/health"
-    port = 8080
-    protocol = "HTTP"
-    timeout = 5
+    interval            = 10
+    matcher             = "200-299"
+    path                = "/health"
+    port                = 8080
+    protocol            = "HTTP"
+    timeout             = 5
   }
 }
 
@@ -111,27 +111,27 @@ resource "aws_autoscaling_group" "catalogue" {
   name                      = "${local.common_name}-catalogue"
   max_size                  = 5 # Autoscaling create 5 instances max up to 5 instances
   min_size                  = 1 # All the time, it shoould maintain atleast 1 instance.
-  health_check_grace_period = 120 
+  health_check_grace_period = 120
   health_check_type         = "ELB"
-  desired_capacity          = 1  # start with 1 instance
+  desired_capacity          = 1 # start with 1 instance
   force_delete              = true
-  
+
   launch_template {
-    id = aws_launch_template.catalogue.id
+    id      = aws_launch_template.catalogue.id
     version = "$Latest"
   }
 
-  vpc_zone_identifier       = local.private_subnet_ids
-  target_group_arns = [aws_lb_target_group.catalogue.arn]
+  vpc_zone_identifier = local.private_subnet_ids
+  target_group_arns   = [aws_lb_target_group.catalogue.arn]
 
-  instance_refresh{
+  instance_refresh {
     strategy = "Rolling"
     preferences {
       min_healthy_percentage = 50
     }
     triggers = ["launch_template"]
   }
-  
+
   dynamic "tag" {
     for_each = merge(
       local.common_tags,
@@ -143,7 +143,7 @@ resource "aws_autoscaling_group" "catalogue" {
       key                 = tag.key
       value               = tag.value
       propagate_at_launch = true
-    } 
+    }
   }
 
   timeouts {
