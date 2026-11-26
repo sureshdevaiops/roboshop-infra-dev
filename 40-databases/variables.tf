@@ -7,7 +7,7 @@ variable "environment" {
 }
 
 variable "zone_id" {
-  default = "xxxxxxxx"    # Need to provide the my account zone id
+  default = "XXXXXXX"    # Need to provide the my account zone id
 }
 
 variable "domain_name" {
