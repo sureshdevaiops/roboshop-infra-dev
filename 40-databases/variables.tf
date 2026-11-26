@@ -7,9 +7,11 @@ variable "environment" {
 }
 
 variable "zone_id" {
-  default = "XXXXXXX"    # Need to provide the my account zone id
+  default = "Z039034629J3O6XB6CZ2B"    # Need to provide the my account zone id
 }
 
 variable "domain_name" {
   default = "ksrdaws92s.store"
 }
+
+
